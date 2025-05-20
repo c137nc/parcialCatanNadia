@@ -3,11 +3,11 @@ const politicas = [
         nombre: "longitud minima",
         value: (password) => {
             const cantCaracteres = password.length
-            if (cantCaracteres < 8 ) {
-                return false
+            if (cantCaracteres >= 8 ) {
+                return true
             }
             else {
-                return true
+                return false
             }
 
         }
@@ -30,16 +30,8 @@ const politicas = [
     {
         nombre: "no espacios en blanco",
         value: (password) => {
-            const espacio = password.split(" ")
-            if (espacio.length > 0) {
-                return false
-            }
-            else {
-                return true
-            }
-
+            return !password.includes(" ");
         }
-
     },
     {
         nombre: "caracteres especiales",
@@ -64,15 +56,23 @@ const politicas = [
         value: (password) => {
             const caracteresEsp = ["!","#","$","%","&","="]
             const ultimoCaracter = password[password.length - 1]
-            return caracteresEsp.some(c=> ultimoCaracter.includes(c))
+            return !caracteresEsp.some(c=> ultimoCaracter.includes(c))
 
 
         }
     }
 ]
 
+
 const contraValidada = (password) => {
-    return politicas.every(p => p.value(password))
+    
+   return politicas.every(p => p.value(password))
 }
 
-module.exports = contraValidada
+const reglasNoCumple = (password) => {
+     return politicas.filter((p) => !p.value(password)).map((r) => r.nombre);
+}
+ 
+
+
+module.exports = {contraValidada, reglasNoCumple}
